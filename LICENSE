@@ -12,12 +12,14 @@ furnished to do so, subject to the following conditions:
 The above copyright notice and this permission notice shall be included in all
 copies or substantial portions of the Software.
 
-Attribution Notice for dsh-pet Ecosystem:
-This repository provides community-created custom pet packs designed for
-dsh-pet (https://github.com/PC2005-cloud/dsh-pet) by PC2005-cloud. No original
-code or built-in character assets from dsh-pet are redistributed here; public
-derivatives targeting the dsh-pet specification credit the upstream project
-https://github.com/PC2005-cloud/dsh-pet.
+AI Co-Creator & Ecosystem Attribution Notice:
+- Architecture, 24fps soft-mesh animation pipeline, configuration & automation:
+  Gemini 4 Carbon High (Google DeepMind Antigravity)
+- 2-head-tall Q-chibi character artwork generation:
+  OpenAI GPT (gpt-image-1.5 via Codex CLI)
+- Upstream dsh-pet plugin & custom pet-pack specification:
+  dsh-pet (https://github.com/PC2005-cloud/dsh-pet) by PC2005-cloud.
+  No original code or built-in character assets from dsh-pet are redistributed here.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
