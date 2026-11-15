@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# One-click installer for dsh-pet AI Sisters Pack (macOS / Linux)
-# 将七位 Q 版 AI 姐妹宠物包一键安装到 DeepSeek Harness 的 dsh-pet 目录并自动热重载。
+# One-click installer for dsh-pet AI Sisters Pack v3.0 (macOS / Linux)
+# 将八位社区知名人设二头身 Q 版 AI 姐妹宠物包一键安装到 DeepSeek Harness 的 dsh-pet 目录并自动热重载。
 
 set -euo pipefail
 
@@ -11,7 +11,7 @@ DSH_ROOT="${DSH_HOME:-${HOME}/.dsh}"
 DSH_PET_DIR="${DSH_PET_DIR:-${DSH_ROOT}/dsh-pet}"
 TARGET_PET_DIR="${DSH_PET_DIR}/pet"
 
-ALL_IDS=("gemini" "kimi" "chatgpt" "claude" "grok" "qwen" "glm")
+ALL_IDS=("gemini" "kimi" "chatgpt" "claude" "grok" "qwen" "glm" "doubao")
 
 if [[ ! -d "${SOURCE_PET_DIR}" ]]; then
   echo "❌ 找不到源码 pet/ 目录: ${SOURCE_PET_DIR}" >&2

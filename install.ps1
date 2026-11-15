@@ -1,10 +1,10 @@
 ﻿<#
 .SYNOPSIS
-  One-click installer for dsh-pet AI Sisters Pack (Windows PowerShell).
-  将七位 Q 版 AI 姐妹宠物包一键安装到 DeepSeek Harness 的 dsh-pet 目录并自动热重载。
+  One-click installer for dsh-pet AI Sisters Pack v3.0 (Windows PowerShell).
+  将八位社区知名人设二头身 Q 版 AI 姐妹宠物包一键安装到 DeepSeek Harness 的 dsh-pet 目录并自动热重载。
 
 .PARAMETER Pets
-  Optional comma-separated list of pet IDs to install (default: all 7 sisters: gemini,kimi,chatgpt,claude,grok,qwen,glm).
+  Optional comma-separated list of pet IDs to install (default: all 8 sisters: gemini,kimi,chatgpt,claude,grok,qwen,glm,doubao).
 
 .PARAMETER DshPetDir
   Optional override for ~/.dsh/dsh-pet directory.
@@ -16,7 +16,7 @@ param(
 
 $ErrorActionPreference = "Stop"
 
-$AllIds = @("gemini", "kimi", "chatgpt", "claude", "grok", "qwen", "glm")
+$AllIds = @("gemini", "kimi", "chatgpt", "claude", "grok", "qwen", "glm", "doubao")
 if ($Pets -eq "all" -or [string]::IsNullOrWhiteSpace($Pets)) {
     $Selected = $AllIds
 } else {
@@ -61,17 +61,11 @@ foreach ($id in $Selected) {
 $LogFile = Join-Path $DshPetDir "logs.txt"
 $Reloaded = $false
 if (Test-Path $LogFile) {
-    $TailLines = Get-Content -Path $LogFile -Tail 80 -ErrorAction SilentlyContinue
-    $MatchedUrls = @()
-    foreach ($line in $TailLines) {
-        if ($line -match "(http://127\.0\.0\.1:\d+/dsh-pet-\d+)") {
-            $MatchedUrls += $Matches[1]
-        }
-    }
-    if ($MatchedUrls.Count -gt 0) {
-        $BaseUrl = $MatchedUrls[-1]
+    $FoundMatch = Select-String -Path $LogFile -Pattern "(http://127\.0\.0\.1:\d+/dsh-pet-\d+)" -ErrorAction SilentlyContinue | Select-Object -Last 1
+    if ($FoundMatch -and $FoundMatch.Matches.Count -gt 0) {
+        $BaseUrl = $FoundMatch.Matches[0].Groups[1].Value
         try {
-            $null = Invoke-RestMethod -Method Post -Uri "$BaseUrl/reload" -TimeoutSec 4
+            $null = Invoke-RestMethod -Method Post -Uri "$BaseUrl/reload" -TimeoutSec 5
             $Reloaded = $true
             Write-Host "🎉 已通知正在运行的 DeepSeek Harness (dsh-pet) 热重载，姐妹们马上登场！" -ForegroundColor Magenta
         } catch {
