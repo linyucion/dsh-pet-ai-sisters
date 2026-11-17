@@ -13,10 +13,12 @@ The above copyright notice and this permission notice shall be included in all
 copies or substantial portions of the Software.
 
 AI Co-Creator & Ecosystem Attribution Notice:
-- Architecture, 24fps soft-mesh animation pipeline, configuration & automation:
+- Architecture, dual-chroma exterior-protected keying, zero-flash 24fps pipeline & automation:
   Gemini 4 Carbon High (Google DeepMind Antigravity)
-- 2-head-tall Q-chibi character artwork generation:
+- 1.85-head-tall Q-chibi character anchors & high-res cel-shaded sprite sheets:
   OpenAI GPT (gpt-image-1.5 via Codex CLI)
+- Native 24fps First+Last-Frame 2D TV-anime motion synthesis:
+  MiniMax-H3 (minimax_h3_fl2va on Google Colab Pro+) & Alibaba Tongyi Wan (wan3.0-video / wan2.2-kf2v)
 - Upstream dsh-pet plugin & custom pet-pack specification:
   dsh-pet (https://github.com/PC2005-cloud/dsh-pet) by PC2005-cloud.
   No original code or built-in character assets from dsh-pet are redistributed here.

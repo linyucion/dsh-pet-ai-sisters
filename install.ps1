@@ -1,10 +1,10 @@
 ﻿<#
 .SYNOPSIS
-  One-click installer for dsh-pet AI Sisters Pack v3.0 (Windows PowerShell).
-  将八位社区知名人设二头身 Q 版 AI 姐妹宠物包一键安装到 DeepSeek Harness 的 dsh-pet 目录并自动热重载。
+  One-click installer for dsh-pet AI Sisters Pack v4.0 (Windows PowerShell).
+  将十六位社区知名人设二头身 Q 版 AI 姐妹满帧动画桌宠包一键安装到 DeepSeek Harness 的 dsh-pet 目录并自动热重载。
 
 .PARAMETER Pets
-  Optional comma-separated list of pet IDs to install (default: all 8 sisters: gemini,kimi,chatgpt,claude,grok,qwen,glm,doubao).
+  Optional comma-separated list of pet IDs, or "all" (default: all 16 sisters), "wave1" (classic 8), or "wave2" (new 8).
 
 .PARAMETER DshPetDir
   Optional override for ~/.dsh/dsh-pet directory.
@@ -16,13 +16,21 @@ param(
 
 $ErrorActionPreference = "Stop"
 
-$AllIds = @("gemini", "kimi", "chatgpt", "claude", "grok", "qwen", "glm", "doubao")
-if ($Pets -eq "all" -or [string]::IsNullOrWhiteSpace($Pets)) {
+$Wave1Ids = @("gemini", "kimi", "chatgpt", "claude", "grok", "qwen", "glm", "doubao")
+$Wave2Ids = @("yuanbao", "nvidia", "copilot", "minimax", "ernie", "claude-fish", "claude-opus", "qwq")
+$AllIds = $Wave1Ids + $Wave2Ids
+
+$Trimmed = if ($null -eq $Pets) { "all" } else { $Pets.Trim().ToLower() }
+if ($Trimmed -eq "all" -or [string]::IsNullOrWhiteSpace($Trimmed)) {
     $Selected = $AllIds
+} elseif ($Trimmed -eq "wave1") {
+    $Selected = $Wave1Ids
+} elseif ($Trimmed -eq "wave2") {
+    $Selected = $Wave2Ids
 } else {
     $Selected = $Pets.Split(",") | ForEach-Object { $_.Trim().ToLower() } | Where-Object { $AllIds -contains $_ }
     if ($Selected.Count -eq 0) {
-        Write-Error "未匹配到有效宠物 ID。可选值: $($AllIds -join ', ')"
+        Write-Error "未匹配到有效宠物 ID。可选值: all, wave1, wave2, 或 $($AllIds -join ', ')"
         exit 1
     }
 }
@@ -42,7 +50,7 @@ if (-not (Test-Path $SourcePetDir)) {
 
 New-Item -ItemType Directory -Force -Path $TargetPetDir | Out-Null
 
-Write-Host "🐾 正在安装 dsh-pet AI 姐妹宠物包 -> $TargetPetDir" -ForegroundColor Cyan
+Write-Host "🐾 正在安装 dsh-pet AI 姐妹宠物包 v4.0.0-beta.1 ($($Selected.Count) 位，Beta 测试版) -> $TargetPetDir" -ForegroundColor Cyan
 
 foreach ($id in $Selected) {
     Copy-Item -Force (Join-Path $SourcePetDir "$id-config.json") $TargetPetDir
@@ -65,7 +73,7 @@ if (Test-Path $LogFile) {
     if ($FoundMatch -and $FoundMatch.Matches.Count -gt 0) {
         $BaseUrl = $FoundMatch.Matches[0].Groups[1].Value
         try {
-            $null = Invoke-RestMethod -Method Post -Uri "$BaseUrl/reload" -TimeoutSec 5
+            $null = Invoke-RestMethod -Method Post -Uri "$BaseUrl/reload" -TimeoutSec 8
             $Reloaded = $true
             Write-Host "🎉 已通知正在运行的 DeepSeek Harness (dsh-pet) 热重载，姐妹们马上登场！" -ForegroundColor Magenta
         } catch {
