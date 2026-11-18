@@ -50,7 +50,7 @@ if (-not (Test-Path $SourcePetDir)) {
 
 New-Item -ItemType Directory -Force -Path $TargetPetDir | Out-Null
 
-Write-Host "🐾 正在安装 dsh-pet AI 姐妹宠物包 v4.0.0-beta.1 ($($Selected.Count) 位，Beta 测试版) -> $TargetPetDir" -ForegroundColor Cyan
+Write-Host "🐾 正在安装 dsh-pet AI 姐妹宠物包 v4.1.0-beta.1 ($($Selected.Count) 位，含破壁互动共272段动画) -> $TargetPetDir" -ForegroundColor Cyan
 
 foreach ($id in $Selected) {
     Copy-Item -Force (Join-Path $SourcePetDir "$id-config.json") $TargetPetDir

@@ -47,7 +47,7 @@ if [[ "${#SELECTED[@]}" -eq 0 ]]; then
   exit 1
 fi
 
-echo "🐾 正在安装 dsh-pet AI 姐妹宠物包 v4.0.0-beta.1 (${#SELECTED[@]} 位，Beta 测试版) -> ${TARGET_PET_DIR}"
+echo "🐾 正在安装 dsh-pet AI 姐妹宠物包 v4.1.0-beta.1 (${#SELECTED[@]} 位，含破壁互动共272段动画) -> ${TARGET_PET_DIR}"
 for id in "${SELECTED[@]}"; do
   cp -f "${SOURCE_PET_DIR}/${id}-config.json" "${TARGET_PET_DIR}/"
   cp -f "${SOURCE_PET_DIR}/${id}-avatar.png" "${TARGET_PET_DIR}/"
