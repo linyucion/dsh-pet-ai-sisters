@@ -102,9 +102,17 @@ jobs:
           done
           echo "Triggering registry-direct.npmmirror.com sync for $pkg_name..."
           for round in 1 2 3 4; do
-            curl -sf -X PUT "https://registry-direct.npmmirror.com/${pkg_name}/sync" || true
-            sleep 5
-            mirror_ver="$(curl -sf "https://registry.npmmirror.com/${pkg_name}/latest" | node -e "let d='';process.stdin.on('data',c=>d+=c).on('end',()=>{try{console.log(JSON.parse(d).version||'')}catch{console.log('')}})" || true)"
+            log_id="$(curl -sf -X PUT "https://registry-direct.npmmirror.com/${pkg_name}/sync" | node -e "let d='';process.stdin.on('data',c=>d+=c).on('end',()=>{try{console.log(JSON.parse(d).logId||'')}catch{console.log('')}})" || true)"
+            if [ -n "$log_id" ]; then
+              for p in $(seq 1 15); do
+                sleep 2
+                done_flag="$(curl -sf "https://registry-direct.npmmirror.com/${pkg_name}/sync/log/${log_id}" | node -e "let d='';process.stdin.on('data',c=>d+=c).on('end',()=>{try{console.log(Boolean(JSON.parse(d).syncDone))}catch{console.log('false')}})" || true)"
+                [ "$done_flag" = "true" ] && break
+              done
+            else
+              sleep 5
+            fi
+            mirror_ver="$(curl -sf "https://registry.npmmirror.com/${pkg_name}/latest?t=$(date +%s)" | node -e "let d='';process.stdin.on('data',c=>d+=c).on('end',()=>{try{console.log(JSON.parse(d).version||'')}catch{console.log('')}})" || true)"
             if [ "$mirror_ver" = "$pkg_ver" ]; then
               echo "npmmirror synced $pkg_name@$pkg_ver!"
               break
