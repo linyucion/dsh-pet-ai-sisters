@@ -10,11 +10,13 @@
  */
 
 import { execFile } from 'node:child_process';
+import { join } from 'node:path';
 import { promisify } from 'node:util';
 import {
   discoverDshPetEndpoint,
+  ensureSistersInstalledAsync,
   notifyDshPetHotReload,
-  syncSistersToDshPet,
+  resolveDshHomeDir,
 } from './src/installer.mjs';
 
 const execFileAsync = promisify(execFile);
@@ -216,22 +218,10 @@ async function dispatchMenuEvent(ep, ev) {
 export function apply(ctx, rawConfig = {}) {
   const cfg = rawConfig && typeof rawConfig === 'object' ? rawConfig : {};
   const petsSelection = typeof cfg.pets === 'string' && cfg.pets.trim() ? cfg.pets.trim() : 'all';
+  const dshHomeOverride = typeof cfg.dshHome === 'string' ? cfg.dshHome : '';
   const enableDirector = cfg.enableDirector !== false;
   const logger = ctx?.logger ?? console;
-
-  let syncResult = null;
-  try {
-    syncResult = syncSistersToDshPet({
-      pets: petsSelection,
-      dshHome: typeof cfg.dshHome === 'string' ? cfg.dshHome : '',
-      logger,
-    });
-  } catch (err) {
-    logger?.warn?.(
-      `[dsh-pet-ai-sisters] Failed to sync pet assets: ${err instanceof Error ? err.message : String(err)}`,
-    );
-    return;
-  }
+  const dshPetRoot = join(resolveDshHomeDir(dshHomeOverride), 'dsh-pet');
 
   const registerEffect =
     typeof ctx?.effect === 'function'
@@ -243,6 +233,26 @@ export function apply(ctx, rawConfig = {}) {
     let disposed = false;
 
     const runBackground = async () => {
+      let syncResult = { skipped: true, dshPetRoot };
+      try {
+        syncResult = await ensureSistersInstalledAsync({
+          pets: petsSelection,
+          dshHome: dshHomeOverride,
+          signal: abortCtrl.signal,
+          logger,
+          onBatchInstalled: async (_ids, root) => {
+            if (!disposed) await notifyDshPetHotReload(root);
+          },
+        });
+      } catch (err) {
+        if (!disposed) {
+          logger?.warn?.(
+            `[dsh-pet-ai-sisters] Failed to sync pet assets: ${err instanceof Error ? err.message : String(err)}`,
+          );
+        }
+        return;
+      }
+
       // Wait briefly for `dsh-pet` in the bundle stack to finish mounting its HTTP route
       await new Promise((r) => setTimeout(r, 1200));
       if (disposed) return;
@@ -305,7 +315,7 @@ export function apply(ctx, rawConfig = {}) {
     return () => {
       disposed = true;
       abortCtrl.abort();
-      const ep = discoverDshPetEndpoint(syncResult.dshPetRoot);
+      const ep = discoverDshPetEndpoint(dshPetRoot);
       if (ep) {
         void callPetApi(ep, 'DELETE', `/menu/item?owner=${encodeURIComponent(OWNER_ID)}`).catch(
           () => undefined,

@@ -1,8 +1,8 @@
-# 🐾 dsh-pet AI Sisters Pack · 十六位社区人气 AI 姐妹满帧动画桌宠全集 (`v4.2.0` 一键插件版)
+# 🐾 dsh-pet AI Sisters Pack · 十六位社区人气 AI 姐妹满帧动画桌宠全集 (`v4.3.0` 极速插件版)
 
 > [!TIP]
-> ✨ **`v4.2.0` 已升级为标准 DeepSeek Harness 组合包插件（Bundle Plugin）！**
-> 现在无需手动敲脚本复制文件，直接在 **DeepSeek Harness「插件」页** 一键安装（支持 `npm` 包名或本仓库 GitHub 地址），即可自动把 **16 位姐妹（共 272 段 24fps 动画）** 装入 `dsh-pet` 并自动热重载登场！
+> ✨ **`v4.3.0` 标准 DeepSeek Harness 极速组合包插件（Bundle Plugin）！**
+> 主插件包仅 **`~1.85 MB`**（2 秒秒装完成，零 RPC 超时），直接在 **DeepSeek Harness「插件 → 添加插件」** 输入包名 **`dsh-pet-ai-sisters`** 一键安装启用，后台将自动通过国内镜像 CDN 并行拉取并 SHA-512 校验解压 **16 位姐妹（共 272 段 24fps 动画 + 64 张贴纸）** 装入 `dsh-pet` 热重载登场！
 
 <p align="center">
   <img src="preview/sixteen-sisters-showcase.gif" alt="16 AI Sisters v4.1.0-beta.1 Anime-Fluid Showcase for dsh-pet" width="1040" />

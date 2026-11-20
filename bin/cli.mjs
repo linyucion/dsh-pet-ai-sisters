@@ -6,7 +6,7 @@
  *   npx -y dsh-pet-ai-sisters@latest --pets gemini,claude,claude-fish
  */
 
-import { notifyDshPetHotReload, syncSistersToDshPet } from '../src/installer.mjs';
+import { ensureSistersInstalledAsync, notifyDshPetHotReload } from '../src/installer.mjs';
 
 function parseCliArgs(argv) {
   let pets = 'all';
@@ -29,7 +29,7 @@ function parseCliArgs(argv) {
 
 async function main() {
   const { pets, dshHome } = parseCliArgs(process.argv);
-  const res = syncSistersToDshPet({ pets, dshHome, force: true, logger: console });
+  const res = await ensureSistersInstalledAsync({ pets, dshHome, force: true, logger: console });
   const reloaded = await notifyDshPetHotReload(res.dshPetRoot);
   if (reloaded) {
     console.log('🎉 已通知正在运行的 dsh-pet 热重载配置，16 位姐妹马上登场！');

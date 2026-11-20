@@ -1,6 +1,6 @@
 {
   "name": "dsh-pet-ai-sisters",
-  "version": "4.2.0",
+  "version": "4.3.0",
   "description": "十六位社区人气 AI 姐妹满帧 24fps 动画桌宠扩展包（适配 DeepSeek Harness / dsh-pet，含 272 段透明动画、64 张贴纸及双人贴贴破壁互动）",
   "icon": "icon.png",
   "type": "module",
@@ -33,9 +33,11 @@
     "bin/",
     "src/",
     "tools/",
-    "pet/",
+    "pet/*-config.json",
+    "pet/*-avatar.png",
     "cordis.patch.yml",
     "icon.png",
+    "screenshots.json",
     "README.md",
     "LICENSE"
   ],

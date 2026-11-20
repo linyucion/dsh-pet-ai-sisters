@@ -12,7 +12,8 @@ import assert from 'node:assert/strict';
 import { existsSync, mkdtempSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
-import { ALL_SISTER_IDS, PACKAGE_ROOT, syncSistersToDshPet } from '../src/installer.mjs';
+import { ALL_SISTER_IDS, PACKAGE_ROOT, ensureSistersInstalledAsync, syncSistersToDshPet } from '../src/installer.mjs';
+import { ASSET_PACKS } from '../src/asset-packs.mjs';
 import pluginEntry, { apply, name as exportedName } from '../index.js';
 
 const REQUIRED_17_CLIPS = [
@@ -62,6 +63,15 @@ function validateManifestAndPatch() {
   assert.equal(exportedName, 'dsh-pet-ai-sisters');
   assert.equal(typeof apply, 'function');
   assert.equal(typeof pluginEntry.apply, 'function');
+
+  // Validate pinned SHA-512 asset packs manifest
+  assert.equal(ASSET_PACKS.length, 4, 'Expected 4 asset packs in src/asset-packs.mjs');
+  const packSisters = ASSET_PACKS.flatMap((p) => p.sisters);
+  assert.equal(new Set(packSisters).size, 16, 'Asset packs must cover all 16 sisters uniquely');
+  for (const p of ASSET_PACKS) {
+    assert.match(p.sha512Hex, /^[a-f0-9]{128}$/, `Pack #${p.id} missing valid 128-hex SHA-512`);
+    assert.ok(Array.isArray(p.urls) && p.urls.length >= 2, `Pack #${p.id} must have mirror + fallback URLs`);
+  }
 }
 
 function validatePetAssets() {
@@ -147,7 +157,11 @@ async function runLifecycleUnitTests() {
     assert.equal(afterUpgrade.pets[0].display, 'none');
     assert.equal(afterUpgrade.pets[0].size, 380);
 
-    // 2. Test Cordis `apply(ctx, config)` + clean effect disposal
+    // 2. Test async installer (`ensureSistersInstalledAsync`)
+    const asyncRes = await ensureSistersInstalledAsync({ pets: 'gemini,claude', dshHome: tempHome, logger: null });
+    assert.equal(asyncRes.skipped, true);
+
+    // 3. Test Cordis `apply(ctx, config)` + clean effect disposal
     const disposers = [];
     const mockCtx = {
       logger: { info() {}, warn() {} },
