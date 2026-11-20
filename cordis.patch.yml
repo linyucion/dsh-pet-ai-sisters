@@ -1,0 +1,6 @@
+- insert:
+    - id: dsh-pet-ai-sisters
+      name: 'dsh-pet-ai-sisters'
+      config:
+        pets: 'all'
+        enableDirector: true

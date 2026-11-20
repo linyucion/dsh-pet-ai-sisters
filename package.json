@@ -1,0 +1,77 @@
+{
+  "name": "dsh-pet-ai-sisters",
+  "version": "4.2.0",
+  "description": "十六位社区人气 AI 姐妹满帧 24fps 动画桌宠扩展包（适配 DeepSeek Harness / dsh-pet，含 272 段透明动画、64 张贴纸及双人贴贴破壁互动）",
+  "icon": "icon.png",
+  "type": "module",
+  "license": "MIT",
+  "author": "linyucion",
+  "private": false,
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/linyucion/dsh-pet-ai-sisters.git"
+  },
+  "homepage": "https://github.com/linyucion/dsh-pet-ai-sisters#readme",
+  "bugs": {
+    "url": "https://github.com/linyucion/dsh-pet-ai-sisters/issues"
+  },
+  "main": "./index.js",
+  "bin": {
+    "dsh-pet-ai-sisters": "./bin/cli.mjs"
+  },
+  "exports": {
+    ".": "./index.js",
+    "./cordis.patch.yml": "./cordis.patch.yml",
+    "./icon": "./icon.png",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "index.js",
+    "bin/",
+    "src/",
+    "tools/",
+    "pet/",
+    "cordis.patch.yml",
+    "icon.png",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=20.11.0"
+  },
+  "scripts": {
+    "test": "node scripts/validate-plugin.mjs --test",
+    "validate": "node scripts/validate-plugin.mjs",
+    "pack:check": "npm pack --dry-run"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "compatibility": {
+      "dshReleases": {
+        "0.2.1-rc.3": "compatible",
+        "0.2.2-rc.2": "compatible",
+        "0.2.2-rc.3": "compatible"
+      }
+    }
+  },
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "dsh-pet",
+    "desktop-pet",
+    "pet",
+    "anime",
+    "gemini",
+    "claude",
+    "chatgpt",
+    "qwen",
+    "kimi",
+    "grok"
+  ]
+}

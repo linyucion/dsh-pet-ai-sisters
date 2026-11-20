@@ -1,8 +1,8 @@
-# 🐾 dsh-pet AI Sisters Pack · 十六位社区人气 AI 姐妹满帧动画桌宠全集 (v4.1.0-beta.1 破壁互动预览版)
+# 🐾 dsh-pet AI Sisters Pack · 十六位社区人气 AI 姐妹满帧动画桌宠全集 (`v4.2.0` 一键插件版)
 
-> [!WARNING]
-> 🧪 **Beta 测试版说明（`v4.1.0-beta.1` Pre-release）**
-> 当前分支与 `v4.1.0-beta.1` 所包含的全部 **16 位姐妹 × 17 段 24fps 动画（共 272 段 `.webm`）** 及可选伴侣脚本均为 **测试预览版本（Beta）**，部分动作的镜头细节与特效仍在持续精修调优中 ✨。欢迎抢先体验反馈；若希望使用经典稳定版，可前往 [Releases](https://github.com/linyucion/dsh-pet-ai-sisters/releases/tag/v3.0.0) 下载 `v3.0.0`。
+> [!TIP]
+> ✨ **`v4.2.0` 已升级为标准 DeepSeek Harness 组合包插件（Bundle Plugin）！**
+> 现在无需手动敲脚本复制文件，直接在 **DeepSeek Harness「插件」页** 一键安装（支持 `npm` 包名或本仓库 GitHub 地址），即可自动把 **16 位姐妹（共 272 段 24fps 动画）** 装入 `dsh-pet` 并自动热重载登场！
 
 <p align="center">
   <img src="preview/sixteen-sisters-showcase.gif" alt="16 AI Sisters v4.1.0-beta.1 Anime-Fluid Showcase for dsh-pet" width="1040" />
@@ -123,45 +123,44 @@ node tools/sisters-director.mjs
 
 ---
 
-## 🚀 快速安装指南
+## 🚀 极简安装指南（三选一，推荐方式一！）
 
-> **前置条件**：已安装 DeepSeek Harness 及 [**dsh-pet**](https://github.com/PC2005-cloud/dsh-pet)（建议 `v0.4.3` 或更高版本）。
-> 16 位姐妹已预设错落不重叠的 `marginX` 任务栏站位（`20px ~ 1632px`），2K/4K 屏幕同屏召唤全员也井然有序！
+> **前置条件**：已安装 DeepSeek Harness 及 [**dsh-pet**](https://github.com/PC2005-cloud/dsh-pet)（建议 `v0.4.3+`）。
+> 16 位姐妹已预设错落不重叠的 `marginX` 任务栏站位（`20px ~ 1632px`），升级版本时还会**自动保留你在设置面板调过的显示开关与大小偏好**！
 
-### 方法一：一键脚本安装（推荐，支持运行中自动热重载）
+### ✨ 方式一：DeepSeek Harness 插件页 / CLI 一键安装（最省心，全自动热生效！）
 
-**Windows (PowerShell)：**
+- **DSH 桌面端图形界面**：打开 **设置 → 插件 → 安装插件**，直接粘贴包名或 GitHub 仓库地址点安装即可：
+  - npm 包名：`dsh-pet-ai-sisters`
+  - 或 GitHub 地址：`https://github.com/linyucion/dsh-pet-ai-sisters`
+- **DSH Web 命令行**：
+  ```bash
+  dsh plugin --profile web add dsh-pet-ai-sisters
+  ```
+> 装好后插件会自动将全部 16 位姐妹同步进 `dsh-pet/pet/`、自动通知 `dsh-pet` 热重载，并自动挂载右键「更多」里的 **跳窗口晃脚 & 姐妹贴贴小剧场** 菜单！
+
+### ⚡ 方式二：`npx` 零克隆单行命令安装（适合独立版 `dsh-pet` 用户）
+
+```bash
+# 默认一键安装全部 16 位姐妹并自动热重载：
+npx -y dsh-pet-ai-sisters@latest
+
+# 可选：只装第一弹经典八姐妹 / 第二弹 / 指定点名组合：
+npx -y dsh-pet-ai-sisters@latest --pets wave1
+npx -y dsh-pet-ai-sisters@latest --pets "gemini,claude,claude-fish,claude-opus,nvidia,qwq"
+```
+
+### 📂 方式三：克隆脚本或 Release 压缩包手动拖入
+
+**Windows (PowerShell) / macOS / Linux：**
 
 ```powershell
 git clone https://github.com/linyucion/dsh-pet-ai-sisters.git
 cd dsh-pet-ai-sisters
-# 默认一键召唤全部 16 位姐妹（共 272 段动画）：
-powershell -ExecutionPolicy Bypass -File .\install.ps1
+powershell -ExecutionPolicy Bypass -File .\install.ps1   # macOS/Linux 运行: bash ./install.sh
 ```
 
-> 💡 **按批次或按需自由挑选安装**：
-> - 只装经典八姐妹：`powershell -ExecutionPolicy Bypass -File .\install.ps1 -Pets wave1`
-> - 只装第二弹八位新姐妹：`powershell -ExecutionPolicy Bypass -File .\install.ps1 -Pets wave2`
-> - 自由点名组合：`powershell -ExecutionPolicy Bypass -File .\install.ps1 -Pets "gemini,claude,claude-fish,claude-opus,nvidia,qwq"`
-
-**macOS / Linux (Bash)：**
-
-```bash
-git clone https://github.com/linyucion/dsh-pet-ai-sisters.git
-cd dsh-pet-ai-sisters
-bash ./install.sh          # 默认安装全部 16 位
-# 或：bash ./install.sh wave1 / bash ./install.sh "gemini,yuanbao,nvidia,claude-fish"
-```
-
----
-
-### 方法二：零命令行手动拖入（Release 压缩包）
-
-1. 前往 [**Releases 页面**](https://github.com/linyucion/dsh-pet-ai-sisters/releases) 下载最新测试版 `dsh-pet-ai-sisters-v4.1.0-beta.1.zip`（或稳定版 `v3.0.0`）并解压。
-2. 将解压后 `pet/` 文件夹内的文件直接复制进你的 `dsh-pet` 自定义宠物目录：
-   - **Windows**：`C:\Users\<你的用户名>\.dsh\dsh-pet\pet\`
-   - **macOS / Linux**：`~/.dsh/dsh-pet/pet/`
-3. 在 DeepSeek Harness 的 **dsh-pet 设置面板**点击一次重载（或重启 DeepSeek Harness），16 位姐妹就会全部出现在桌面上啦！
+或前往 [**Releases 页面**](https://github.com/linyucion/dsh-pet-ai-sisters/releases) 下载压缩包，将 `pet/` 目录解压进 `~/.dsh/dsh-pet/pet/` 后重载配置即可。
 
 ---
 

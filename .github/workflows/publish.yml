@@ -1,0 +1,109 @@
+name: Publish
+
+# Pushing a v* tag locally (`git tag v4.2.0 && git push origin v4.2.0`) or creating
+# a new tag/release in the GitHub UI automatically validates, publishes to npm,
+# and uploads prebuilt Release archives!
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Existing tag to publish (e.g. v4.2.0), leave empty for current ref'
+        required: false
+        type: string
+
+permissions:
+  contents: write
+  id-token: write
+
+concurrency:
+  group: npm-publish-${{ github.ref_name }}
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    name: Publish ${{ github.event.inputs.tag || github.ref_name }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.tag || github.ref }}
+
+      - name: Set up Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          registry-url: 'https://registry.npmjs.org'
+
+      # Upgrade to npm@11 so both OIDC Trusted Publishing (zero secrets!) and NPM_TOKEN work seamlessly
+      - name: Upgrade npm CLI for Trusted Publishing (OIDC)
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm install --global npm@11
+          npm --version
+
+      - name: Verify tag matches package.json version
+        shell: bash
+        env:
+          TARGET_TAG: ${{ github.event.inputs.tag || github.ref_name }}
+        run: |
+          set -euo pipefail
+          pkg_ver="$(node -p "require('./package.json').version")"
+          expected="v${pkg_ver}"
+          if [[ "$TARGET_TAG" == v* ]] && [ "$TARGET_TAG" != "$expected" ]; then
+            echo "::error::Tag $TARGET_TAG does not match package.json version $expected"
+            exit 1
+          fi
+          echo "Verified version: $expected"
+
+      - name: Validate bundle & run tests
+        run: npm test
+
+      - name: Publish to npm (OIDC Trusted Publisher or NPM_TOKEN)
+        shell: bash
+        env:
+          NPM_TOKEN_SECRET: ${{ secrets.NPM_TOKEN }}
+        run: |
+          set -euo pipefail
+          pkg_ver="$(node -p "require('./package.json').version")"
+          dist_tag="latest"
+          if [[ "$pkg_ver" == *-* ]]; then
+            dist_tag="next"
+          fi
+
+          if [ -n "$NPM_TOKEN_SECRET" ]; then
+            echo "Publishing with NPM_TOKEN secret (tag: $dist_tag)..."
+            NODE_AUTH_TOKEN="$NPM_TOKEN_SECRET" npm publish --access public --provenance --tag "$dist_tag"
+          else
+            echo "Publishing via GitHub OIDC Trusted Publisher (tag: $dist_tag)..."
+            rm -f ~/.npmrc "$NPM_CONFIG_USERCONFIG" 2>/dev/null || true
+            npm publish --access public --tag "$dist_tag"
+          fi
+
+      - name: Build GitHub Release Tarball & Zip Assets
+        if: startsWith(github.ref, 'refs/tags/v') || github.event.inputs.tag != ''
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REL_TAG: ${{ github.event.inputs.tag || github.ref_name }}
+        run: |
+          set -euo pipefail
+          tgz_file="$(npm pack)"
+          zip_file="dsh-pet-ai-sisters-${REL_TAG}.zip"
+          zip -r -q "$zip_file" pet preview tools src bin index.js cordis.patch.yml package.json icon.png install.ps1 install.sh README.md LICENSE
+
+          prerelease_flag=""
+          if [[ "$REL_TAG" == *-* ]]; then
+            prerelease_flag="--prerelease"
+          fi
+
+          if gh release view "$REL_TAG" >/dev/null 2>&1; then
+            gh release upload "$REL_TAG" "$tgz_file" "$zip_file" --clobber
+          else
+            gh release create "$REL_TAG" "$tgz_file" "$zip_file" $prerelease_flag --generate-notes --title "🐾 dsh-pet-ai-sisters ${REL_TAG}"
+          fi
